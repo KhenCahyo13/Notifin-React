@@ -1,12 +1,7 @@
 import type { ComponentType } from 'react';
 
 export type NotifinType =
-    | 'default'
-    | 'error'
-    | 'info'
-    | 'loading'
-    | 'success'
-    | 'warning';
+    'default' | 'error' | 'info' | 'loading' | 'success' | 'warning';
 
 export interface NotifinAction {
     label: string;
@@ -82,11 +77,7 @@ export type NotifinThemeIcons = Record<NotifinType, NotifinIconComponent>;
 
 export type NotifinColorScheme = 'dark' | 'light' | 'system';
 export type NotifinMotionPreset =
-    | 'bounce'
-    | 'none'
-    | 'scale'
-    | 'slide'
-    | 'subtle';
+    'bounce' | 'none' | 'scale' | 'slide' | 'subtle';
 
 export interface NotifinSchemeThemeConfig {
     className?: string;

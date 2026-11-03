@@ -29,7 +29,7 @@ export default defineConfig({
             ],
             output: {
                 assetFileNames: (assetInfo) => {
-                    if (assetInfo.name === 'style.css') {
+                    if (assetInfo.name?.endsWith('.css')) {
                         return 'notifin.css';
                     }
 

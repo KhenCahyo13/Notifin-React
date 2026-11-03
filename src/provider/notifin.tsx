@@ -100,9 +100,9 @@ export function Notifin({
                     dialogToneClasses={dialogToneClasses}
                     icons={icons}
                     iconToneClasses={iconToneClasses}
+                    motionClassName={motionClassName}
                     pendingCount={pendingCount}
                     scheme={scheme}
-                    motionClassName={motionClassName}
                     schemeClassName={schemeTheme?.className}
                     showQueueCount={showQueueCount}
                 />
@@ -133,6 +133,7 @@ function useNotifinColorScheme(colorScheme: NotifinProps['colorScheme']) {
         const onChange = (event: MediaQueryListEvent) =>
             setPrefersDark(event.matches);
 
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- resyncs with the OS scheme when resolvedColorScheme flips back to 'system'
         setPrefersDark(mediaQuery.matches);
         mediaQuery.addEventListener('change', onChange);
 
@@ -157,9 +158,9 @@ function DialogBody({
     dialogToneClasses,
     icons,
     iconToneClasses,
+    motionClassName,
     pendingCount,
     scheme,
-    motionClassName,
     schemeClassName,
     showQueueCount,
 }: NotifinBodyProps & {
@@ -183,7 +184,9 @@ function DialogBody({
 
     return (
         <AlertDialog.Portal>
-            <AlertDialog.Overlay className={cn('nf-overlay', motionClassName)} />
+            <AlertDialog.Overlay
+                className={cn('nf-overlay', motionClassName)}
+            />
             <AlertDialog.Content
                 className={cn(
                     'nf-content',
