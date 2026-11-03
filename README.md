@@ -164,6 +164,25 @@ await notifin.promise(saveProfile(), {
 });
 ```
 
+Auto-dismiss with a progress bar:
+
+```tsx
+notifin('Link copied', { duration: 3000 });
+```
+
+## Options
+
+`notifin(title, options?)` and its variants accept:
+
+- `description?: string`
+- `duration?: number` — auto-dismiss after this many milliseconds; shows a progress bar.
+- `dismissible?: boolean` (default `true`) — whether the dialog can be closed before its action/cancel is used.
+- `allowEscapeClose?: boolean` — allow the Escape key to dismiss (requires `dismissible`).
+- `action?: { label, onClick? }`
+- `cancel?: { label, onClick? }`
+- `id?: string` — provide your own id to target this notification later (e.g. with `notifin.update`).
+- `onDismiss?: () => void`
+
 ## API
 
 - `notifin(title, options?)` -> returns `id`
@@ -186,7 +205,9 @@ await notifin.promise(saveProfile(), {
 - `@radix-ui/react-alert-dialog` and `@radix-ui/react-visually-hidden` are already included by this package, so no manual install is needed.
 - `Notifin` must be mounted for dialogs to render.
 - Calling `notifin` API methods without a mounted `<Notifin />` will throw an error to prevent silent failures.
-- Dialogs are queued; one dialog is shown at a time.
+- Dialogs are queued; one dialog is shown at a time, with queued items previewed as a subtle stacked-card effect behind the active one.
+
+See [CHANGELOG.md](./CHANGELOG.md) for release history.
 
 ## License
 
@@ -200,6 +221,9 @@ Contributions are welcome.
 2. Create a feature/fix branch.
 3. Make your changes with tests and documentation updates.
 4. Open a pull request with clear context and change summary.
+
+Run `pnpm dev` to open a local playground (`playground/`) that imports the
+library straight from `src`, for quickly trying out changes with hot reload.
 
 Before submitting, run:
 
