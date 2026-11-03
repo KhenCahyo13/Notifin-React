@@ -8,8 +8,8 @@ async function loadModules() {
     vi.resetModules();
 
     const [{ notifin }, { notifinStore }] = await Promise.all([
-        import('../notifin'),
-        import('../store'),
+        import('../../core/notifin'),
+        import('../../core/store'),
     ]);
 
     return {

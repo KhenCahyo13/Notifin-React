@@ -41,8 +41,8 @@ async function loadConsumerModules() {
     vi.resetModules();
 
     const [{ notifin }, { notifinStore }] = await Promise.all([
-        import('../index'),
-        import('../core/store'),
+        import('../../index'),
+        import('../../core/store'),
     ]);
 
     return {
@@ -66,7 +66,7 @@ describe('consumer install flow', () => {
 
         vi.stubGlobal('document', document);
 
-        await import('../index');
+        await import('../../index');
 
         const injectedStyle = getById('notifin-style');
 
