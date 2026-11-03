@@ -28,14 +28,14 @@
 
 .nf-description {
     margin: 0;
-    color: #525252;
+    color: var(--nf-color-description);
     font-size: var(--nf-text-description-size);
     line-height: 1.45;
     word-break: break-word;
 }
 
 .nf-pending {
-    color: #737373;
+    color: var(--nf-color-pending);
     font-size: var(--nf-text-pending-size);
 }
 
@@ -70,17 +70,17 @@
 }
 
 .nf-button-cancel {
-    border-color: #d4d4d4;
-    background: #fff;
-    color: #404040;
+    border-color: var(--nf-color-cancel-border);
+    background: var(--nf-color-cancel-bg);
+    color: var(--nf-color-cancel-text);
 }
 
 .nf-button-cancel:hover:not(:disabled) {
-    background: #f5f5f5;
+    background: var(--nf-color-cancel-bg-hover);
 }
 
 .nf-button-action {
-    color: #fff;
+    color: var(--nf-color-action-text);
 }
 
 @media (min-width: 640px) {
