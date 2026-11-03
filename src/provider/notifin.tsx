@@ -2,6 +2,7 @@ import '../styles/index.css';
 
 import * as AlertDialog from '@radix-ui/react-alert-dialog';
 import { Root as VisuallyHidden } from '@radix-ui/react-visually-hidden';
+import type { CSSProperties } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 
 import { notifinStore } from '../core/store';
@@ -170,6 +171,10 @@ function DialogBody({
 }) {
     const Icon = icons[dialog.type];
     const shouldRenderAction = Boolean(dialog.action) || dialog.dismissible;
+    const shouldRenderPending = showQueueCount && pendingCount > 0;
+    const shouldRenderFooter =
+        shouldRenderPending || Boolean(dialog.cancel) || shouldRenderAction;
+    const stackCount = Math.min(pendingCount, 2);
     const isLoading = dialog.type === 'loading';
     const toneClasses = dialogToneClasses[dialog.type];
     const iconClasses = iconToneClasses[dialog.type];
@@ -182,11 +187,50 @@ function DialogBody({
             'nf-action-default'
     );
 
+    const [contentNode, setContentNode] = useState<HTMLDivElement | null>(null);
+    const [contentHeight, setContentHeight] = useState(0);
+
+    useEffect(() => {
+        if (!contentNode || typeof ResizeObserver === 'undefined') {
+            return;
+        }
+
+        const observer = new ResizeObserver((entries) => {
+            const entry = entries[0];
+            if (entry) {
+                setContentHeight(entry.contentRect.height);
+            }
+        });
+
+        observer.observe(contentNode);
+        return () => observer.disconnect();
+    }, [contentNode]);
+
     return (
         <AlertDialog.Portal>
             <AlertDialog.Overlay
                 className={cn('nf-overlay', motionClassName)}
             />
+
+            {Array.from({ length: stackCount }, (_, index) => (
+                <div
+                    aria-hidden="true"
+                    className={cn(
+                        'nf-stack',
+                        scheme === 'dark' && 'nf-scheme-dark'
+                    )}
+                    key={index}
+                    style={
+                        {
+                            '--nf-stack-depth': index + 1,
+                            height: contentHeight
+                                ? `${contentHeight}px`
+                                : undefined,
+                        } as CSSProperties
+                    }
+                />
+            ))}
+
             <AlertDialog.Content
                 className={cn(
                     'nf-content',
@@ -200,6 +244,7 @@ function DialogBody({
                         event.preventDefault();
                     }
                 }}
+                ref={setContentNode}
             >
                 <div className="nf-header">
                     <div className="nf-title-row">
@@ -229,48 +274,63 @@ function DialogBody({
                     </AlertDialog.Description>
                 </div>
 
-                <div className="nf-footer">
-                    {showQueueCount && pendingCount > 0 ? (
-                        <div className="nf-pending">{pendingCount} pending</div>
-                    ) : null}
-
-                    <div className="nf-actions">
-                        {dialog.cancel ? (
-                            <AlertDialog.Cancel asChild>
-                                <button
-                                    className="nf-button nf-button-cancel"
-                                    disabled={isLoading}
-                                    onClick={() => {
-                                        void dialog.cancel?.onClick?.();
-                                        notifinStore.dismiss(dialog.id);
-                                    }}
-                                    type="button"
-                                >
-                                    {dialog.cancel.label}
-                                </button>
-                            </AlertDialog.Cancel>
+                {shouldRenderFooter ? (
+                    <div className="nf-footer">
+                        {shouldRenderPending ? (
+                            <div className="nf-pending">
+                                {pendingCount} pending
+                            </div>
                         ) : null}
 
-                        {shouldRenderAction ? (
-                            <AlertDialog.Action asChild>
-                                <button
-                                    className={cn(
-                                        'nf-button nf-button-action',
-                                        actionToneClass
-                                    )}
-                                    disabled={isLoading}
-                                    onClick={() => {
-                                        void dialog.action?.onClick?.();
-                                        notifinStore.dismiss(dialog.id);
-                                    }}
-                                    type="button"
-                                >
-                                    {dialog.action?.label ?? 'OK'}
-                                </button>
-                            </AlertDialog.Action>
-                        ) : null}
+                        <div className="nf-actions">
+                            {dialog.cancel ? (
+                                <AlertDialog.Cancel asChild>
+                                    <button
+                                        className="nf-button nf-button-cancel"
+                                        disabled={isLoading}
+                                        onClick={() => {
+                                            void dialog.cancel?.onClick?.();
+                                            notifinStore.dismiss(dialog.id);
+                                        }}
+                                        type="button"
+                                    >
+                                        {dialog.cancel.label}
+                                    </button>
+                                </AlertDialog.Cancel>
+                            ) : null}
+
+                            {shouldRenderAction ? (
+                                <AlertDialog.Action asChild>
+                                    <button
+                                        className={cn(
+                                            'nf-button nf-button-action',
+                                            actionToneClass
+                                        )}
+                                        disabled={isLoading}
+                                        onClick={() => {
+                                            void dialog.action?.onClick?.();
+                                            notifinStore.dismiss(dialog.id);
+                                        }}
+                                        type="button"
+                                    >
+                                        {dialog.action?.label ?? 'OK'}
+                                    </button>
+                                </AlertDialog.Action>
+                            ) : null}
+                        </div>
                     </div>
-                </div>
+                ) : null}
+
+                {dialog.duration ? (
+                    <div className="nf-progress" key={dialog.id}>
+                        <div
+                            className="nf-progress-bar"
+                            style={{
+                                animationDuration: `${dialog.duration}ms`,
+                            }}
+                        />
+                    </div>
+                ) : null}
             </AlertDialog.Content>
         </AlertDialog.Portal>
     );

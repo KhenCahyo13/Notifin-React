@@ -28,6 +28,7 @@
 
 .nf-description {
     margin: 0;
+    padding-left: calc(var(--nf-icon-wrap-size) + var(--nf-icon-gap));
     color: var(--nf-color-description);
     font-size: var(--nf-text-description-size);
     line-height: 1.45;
@@ -35,6 +36,8 @@
 }
 
 .nf-pending {
+    flex-shrink: 0;
+    margin-right: auto;
     color: var(--nf-color-pending);
     font-size: var(--nf-text-pending-size);
 }
@@ -56,12 +59,17 @@
     transition:
         background-color 150ms ease,
         color 150ms ease,
-        border-color 150ms ease;
+        border-color 150ms ease,
+        transform 100ms ease;
 }
 
 .nf-button:focus-visible {
     outline: none;
     box-shadow: var(--nf-focus-ring);
+}
+
+.nf-button:active:not(:disabled) {
+    transform: scale(0.97);
 }
 
 .nf-button:disabled {
