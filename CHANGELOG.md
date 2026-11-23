@@ -12,6 +12,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - GitHub Actions CI workflow running prettier, lint, typecheck, test, and
   build on every push and pull request to `main`.
 
+## [1.3.1] - 2026-11-24
+
+### Fixed
+
+- Externalized `react/jsx-runtime` and `react/jsx-dev-runtime` in the build
+  so they are no longer bundled into `dist/notifin.js`. Previously those
+  internal React runtime files were inlined and still called `require`,
+  which crashed consumers bundling with Rolldown/Vite 8 (`Calling require
+  for "react" in an environment that doesn't expose the require function`).
+
 ## [1.2.4] - 2026-11-04
 
 ### Changed
